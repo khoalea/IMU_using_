@@ -1,0 +1,5 @@
+../Core/User_code/SERIAL/serial.c:14:6:serial_init	8	static
+../Core/User_code/SERIAL/serial.c:18:6:serial_write_com	224	static
+../Core/User_code/SERIAL/serial.c:44:6:serial_handle	128	static
+../Core/User_code/SERIAL/serial.c:78:6:StrCompare	32	static
+../Core/User_code/SERIAL/serial.c:90:6:HAL_UART_RxCpltCallback	16	static

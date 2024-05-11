@@ -1,0 +1,3 @@
+../Core/User_code/MOTOR/motor.c:3:6:motor_init	16	static
+../Core/User_code/MOTOR/motor.c:19:6:motor_reset	16	static
+../Core/User_code/MOTOR/motor.c:32:6:motor_set_duty	16	static

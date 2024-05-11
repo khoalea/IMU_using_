@@ -39,11 +39,11 @@ typedef struct
   float dresult;
 
 } PID_CONTROL_t;
-
+float pid_C(PID_CONTROL_t *tpid_ctrl, float dcmd_value, float dact_value);
 void pid_reset(PID_CONTROL_t *tpid_ctrl);
 void pid_init(PID_CONTROL_t *tpid_ctrl, float dkp, float dki, float dkd, float dlimit_max, float dlimit_min, float dts);
 void pid_tunning_set(PID_CONTROL_t *tpid_ctrl, float dkp, float dki, float dkd);
-float lpf_trap(float draw_signal_value, float dpre_raw_signal_value, float dpre_filtered_value, float dfc, float dts);
+//float lpf_trap(float draw_signal_value, float dpre_raw_signal_value, float dpre_filtered_value, float dfc, float dts);
 float pid_compute(PID_CONTROL_t *tpid_ctrl, float dcmd_value, float dact_value);
 
 #endif /* INC_PID_H_ */

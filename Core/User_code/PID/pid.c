@@ -54,28 +54,38 @@ void pid_tunning_set(PID_CONTROL_t *tpid_ctrl, float dkp, float dki, float dkd)
     tpid_ctrl->dkd = dkd;
 }
 
-float lpf_trap(float draw_signal_value, float dpre_raw_signal_value, float dpre_filtered_value, float dfc, float dts)
+//float lpf_trap(float draw_signal_value, float dpre_raw_signal_value, float dpre_filtered_value, float dfc, float dts)
+//{
+//    float dfiltered_value = 0.0f;
+//    float da1 = 0.0f;
+//    float db0 = 0.0f;
+//    float db1 = 0.0f;
+//    float dwc = 0.0f;
+//
+//    if (dfc < 0.0f || dts < 0.0f)
+//    {
+//        return dfiltered_value;
+//    }
+//
+//    dwc = dfc * 2 * 3.141592f; // rad/s
+//    da1 = (2.0f - dwc * dts) / (2.0f + dwc * dts);
+//    db0 = (dwc * dts) / (2.0f + dwc * dts);
+//    db1 = db0;
+//    dfiltered_value = da1 * dpre_filtered_value + db0 * draw_signal_value + db1 * dpre_raw_signal_value;
+//
+//    return dfiltered_value;
+//}
+float pid_C(PID_CONTROL_t *tpid_ctrl, float dcmd_value, float dact_value)
 {
-    float dfiltered_value = 0.0f;
-    float da1 = 0.0f;
-    float db0 = 0.0f;
-    float db1 = 0.0f;
-    float dwc = 0.0f;
-
-    if (dfc < 0.0f || dts < 0.0f)
-    {
-        return dfiltered_value;
-    }
-
-    dwc = dfc * 2 * 3.141592f; // rad/s
-    da1 = (2.0f - dwc * dts) / (2.0f + dwc * dts);
-    db0 = (dwc * dts) / (2.0f + dwc * dts);
-    db1 = db0;
-    dfiltered_value = da1 * dpre_filtered_value + db0 * draw_signal_value + db1 * dpre_raw_signal_value;
-
-    return dfiltered_value;
+	if (tpid_ctrl == NULL)
+	    {
+	        // Handle null pointer error
+	        return 0.0f; // or any default value indicating an error
+	    }
+	tpid_ctrl->derror = dcmd_value - dact_value;
+	tpid_ctrl->dresult = tpid_ctrl->derror;
+	return tpid_ctrl->dresult;
 }
-
 
 // Compute PID Controllers
 float pid_compute(PID_CONTROL_t *tpid_ctrl, float dcmd_value, float dact_value)

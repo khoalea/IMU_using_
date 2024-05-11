@@ -50,29 +50,29 @@ void serial_handle(uint8_t *ubuff)
 	}
 	char str[MAX_LEN];
 	snprintf(str, sizeof(str), "%s", ubuff);
-	sscanf(str, "%s %f %f %f %f", scmd, &dkp, &dki, &dkd, &dset_point);
+	sscanf(str, "%f %f %f %f" , &dkp, &dki, &dkd, &dset_point);
 	HAL_UART_Transmit(&UART_COM, ubuff, urx_index, HAL_MAX_DELAY);
 	urx_index = 0;
-	  if (StrCompare(scmd, (uint8_t*)"SPID", 4))
-	    {
-	      tprocess = SPID;
-	    }
-	    else if (StrCompare(scmd, (uint8_t*)"VTUN", 4))
-	    {
-	      tprocess = VTUN;
-	    }
-	    else if (StrCompare(scmd, (uint8_t*)"PTUN", 4))
-	    {
-	      tprocess = PTUN;
-	    }
-	    else if (StrCompare(scmd, (uint8_t*)"STOP", 4))
-	    {
-	      tprocess = STOP;
-	    }
-	    else
-	    {
-	      tprocess = NONE;
-	    }
+//	  if (StrCompare(scmd, (uint8_t*)"SPID", 4))
+//	    {
+//	      tprocess = SPID;
+//	    }
+//	    else if (StrCompare(scmd, (uint8_t*)"VTUN", 4))
+//	    {
+//	      tprocess = VTUN;
+//	    }
+//	    else if (StrCompare(scmd, (uint8_t*)"PTUN", 4))
+//	    {
+//	      tprocess = PTUN;
+//	    }
+//	    else if (StrCompare(scmd, (uint8_t*)"STOP", 4))
+//	    {
+//	      tprocess = STOP;
+//	    }
+//	    else
+//	    {
+//	      tprocess = NONE;
+//	    }
 }
 
 bool StrCompare(char *pBuff, uint8_t *pSample, uint8_t nSize)

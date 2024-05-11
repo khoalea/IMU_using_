@@ -27,10 +27,13 @@
 /* USER CODE BEGIN Includes */
 #include "stdio.h"
 #include "string.h"
-#include "../IMU_MPU6050/mpu6050.h"
-#include "../Motor/motor.h"
-#include "../PID/pid.h"
-#include "../Serial/serial.h"/* USER CODE END Includes */
+#include "../User_code/IMU_MPU6050/mpu6050.h"
+#include "../User_code/Motor/motor.h"
+#include "../User_code/PID/pid.h"
+#include "../User_code/user_define.h"
+#include "../User_code/Serial/serial.h"
+//#include "../User_code/PID/pid_t.h"
+/* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
@@ -51,15 +54,16 @@
 
 /* USER CODE BEGIN PV */
 uint8_t buff[10];
-
-
+float desired_angle = 20.0f;
+double current_angle;
+double control_signal;
+MPU6050_t MPU6050;
 Motor_t tmotor;
 PID_CONTROL_t tpid;
-extern PROCESS_t tprocess;
-
+//PIDController_t tpid;
 extern uint8_t urx_buff[MAX_LEN];
 extern uint8_t utx_buff[MAX_LEN];
-extern char scmd[4];
+//extern char scmd[4];
 extern float dkp;
 extern float dki;
 extern float dkd;
@@ -112,36 +116,37 @@ int main(void)
 	motor_init(&tmotor, PPR);
 	pid_init(&tpid, ZERO, ZERO, ZERO, PID_CONTROLLER_LIMIT_MAX, PID_CONTROLLER_LIMIT_MIN, SAMPLING_TIME);
 	serial_init();
-	while (MPU6050_Init(&hi2c1) == 1);
+//	PIDController_Init(&tpid, 50, ZERO, ZERO, SAMPLING_TIME);
+//	  while (MPU6050_Init(&hi2c1) == 1);
 
+	MPU6050_Init(&hi2c1);
+	// Receive data
+	serial_handle(urx_buff);
+	pid_tunning_set(&tpid, dkp, dki, dkd);
+	desired_angle = dset_point;
+	pid_tunning_set(&tpid, 5, 0.0001, 0);
   /* USER CODE END 2 */
-
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+	while (1)
+   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	    MPU6050_Read_Yaw(&hi2c1, &MPU6050);
+
+		MPU6050_Read_All(&hi2c1, &MPU6050);
+		current_angle = MPU6050.yaw;
+		control_signal = pid_compute(&tpid, desired_angle, current_angle);
+		motor_set_duty(control_signal);
+//      control_signal = PIDController_Compute(&tpid, desired_angle, current_angle, SAMPLING_TIME); // 0.0 as reference value
 //	    MPU6050_Read_All(&hi2c1, &MPU6050);
-		sprintf(buff, "%.4f\r\n",MPU6050.Gz);
-//		sprintf(buff, "%.4f\r\n",MPU6050.fil_Gz);
+//		sprintf(buff, "%.4f\r\n",);
 
-//		HAL_UART_Transmit( &huart1, buff, sizeof(buff),100);
-//		HAL_Delay(100);
 
-//		sprintf(buff, "%.4f\r\n",MPU6050.Gx);
-//		HAL_UART_Transmit( &huart1, buff, sizeof(buff),100);
-//		HAL_Delay(10);
-//
-//		sprintf(buff, "%.4f\r\n",MPU6050.Gy);
-//		HAL_UART_Transmit( &huart1, buff, sizeof(buff),100);
-//		HAL_Delay(10);
-//
-//		sprintf(buff, "%.4f\r\n",MPU6050.yaw);
-//		HAL_UART_Transmit( &huart1, buff, sizeof(buff),100);
-//		HAL_Delay(10);
+		sprintf(buff, "%.4f\r\n",control_signal);
+		HAL_UART_Transmit( &huart1, buff, sizeof(buff),100);
+		HAL_Delay(100);
+
 
   }
   /* USER CODE END 3 */

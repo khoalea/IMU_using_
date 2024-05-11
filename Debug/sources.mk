@@ -24,5 +24,9 @@ C_DEPS :=
 SUBDIRS := \
 Core/Src \
 Core/Startup \
+Core/User_code/IMU_MPU6050 \
+Core/User_code/MOTOR \
+Core/User_code/PID \
+Core/User_code/SERIAL \
 Drivers/STM32F1xx_HAL_Driver/Src \
 
